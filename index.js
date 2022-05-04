@@ -23,7 +23,7 @@ async function run(){
   app.get('/fruitService',async(req, res) =>{
       const query = {};
       const cursor = fruitCollection.find(query);
-      const fruits = await cursor.limit(6).toArray();
+   git    const fruits = await cursor.toArray();
       res.send(fruits)
   });
 
@@ -32,6 +32,19 @@ async function run(){
     const query = {_id: ObjectId(id)};
     const fruitService = await fruitCollection.findOne(query);
     res.send(fruitService);
+  });
+
+  app.post('/fruitService/',async(req, res) =>{
+    const newInventory = req.body;
+    const result = await fruitCollection.insertOne(newInventory);
+    res.send(result);
+  })
+
+  app.delete("/fruitService/:id", async(req, res)=>{
+    const id = req.params.id;
+    const query = {_id: ObjectId(id)};
+    const result = await fruitCollection.deleteOne(query);
+    res.send(result);
   });
 
   }
