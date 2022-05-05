@@ -23,7 +23,7 @@ async function run(){
   app.get('/fruitService',async(req, res) =>{
       const query = {};
       const cursor = fruitCollection.find(query);
-   git    const fruits = await cursor.toArray();
+      const fruits = await cursor.toArray();
       res.send(fruits)
   });
 
@@ -33,12 +33,28 @@ async function run(){
     const fruitService = await fruitCollection.findOne(query);
     res.send(fruitService);
   });
-
+  
   app.post('/fruitService/',async(req, res) =>{
     const newInventory = req.body;
     const result = await fruitCollection.insertOne(newInventory);
     res.send(result);
   })
+
+  app.put("/fruitService/:id", async (req, res) => {
+    const id = req.params.id;
+    const updatedStock = req.body;
+    const filter = { _id: ObjectId(id) };
+    const options = { upsert: true };
+
+    const updateDoc = {
+      $set: {
+        quantity: updatedStock.quantity,
+      },
+    };
+    const result = await fruitCollection.updateOne(filter, updateDoc, options);
+    res.send(result);
+  });
+
 
   app.delete("/fruitService/:id", async(req, res)=>{
     const id = req.params.id;
