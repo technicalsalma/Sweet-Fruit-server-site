@@ -55,13 +55,29 @@ async function run(){
     res.send(result);
   });
 
-
+//Delete
   app.delete("/fruitService/:id", async(req, res)=>{
     const id = req.params.id;
     const query = {_id: ObjectId(id)};
     const result = await fruitCollection.deleteOne(query);
     res.send(result);
   });
+
+  app.get("/fruitServices", async (req, res) => {
+    const email = req.query.email;
+    console.log(email);
+    const query = { email: email };
+    const cursor = fruitCollection.find(query);
+    const fruits = await cursor.toArray();
+    res.send(fruits);
+  });
+
+  app.get("/fruitService", async(req, res) =>{
+    const query = {};
+    const cursor = fruitCollection.find(query);
+    const fruits = await cursor.toArray();
+    res.send(fruits)
+  })
 
   }
   finally{
