@@ -72,11 +72,11 @@ async function run(){
     res.send(fruits);
   });
 
-  app.get("/fruitService", async(req, res) =>{
+  app.get("/order", async(req, res) =>{
     const query = {};
     const cursor = fruitCollection.find(query);
-    const fruits = await cursor.toArray();
-    res.send(fruits)
+    const orders = await cursor.toArray();
+    res.send(orders)
   })
 
   }
