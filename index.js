@@ -57,6 +57,7 @@ async function run(){
       const tokenInfo = req.headers.authorization;
       const [email, accessToken] = tokenInfo.split(" ");
       const decoded = verifyToken(accessToken);
+      console.log(email, decoded)
 
       if (email === decoded.email) {
        const result = await fruitCollection.insertOne(newInventory);
@@ -127,3 +128,17 @@ app.get('/', (req , res)=>{
 app.listen(port,()=>{
     console.log('john is running on port', port);
 })
+
+// verify token function =======>>>
+function verifyToken(token) {
+  let email;
+  jwt.verify(token, process.env.ACCESS_TOTKEN_SECRE, function (err, decoded) {
+    if (err) {
+      email = "Invalid email";
+    }
+    if (decoded) {
+      email = decoded;
+    }
+  });
+  return email;
+}
