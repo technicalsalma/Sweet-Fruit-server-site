@@ -20,20 +20,7 @@ async function run(){
   try{
     await client.connect();
     const fruitCollection = client.db("SweetFruit").collection("fruitService");
-  
-   // jwt start
-
-  app.post("/login",(req, res) =>{
-    const email = req.body;
-   
-    const token = jwt.sign(email, process.env.ACCESS_TOKEN_SECRET);
-    res.send({token})
-
-  
-  })
-
-
-   //jws end
+ 
 
     
    //Fruit Api
@@ -51,22 +38,19 @@ async function run(){
       res.send(fruitService);
     });
 
-    app.post("/fruitService/", async (req, res) => {
+    app.post("/fruitService", async (req, res) => {
       const newInventory = req.body;
-      console.log(newInventory)
-      const tokenInfo = req.headers.authorization;
-      const [email, accessToken] = tokenInfo.split(" ");
-      const decoded = verifyToken(accessToken);
-      console.log(email, decoded)
+  
+      const result = await fruitCollection.insertOne(newInventory);
+      res.send(result);
+    });
 
-      if (email === decoded.email) {
-       const result = await fruitCollection.insertOne(newInventory);
-       res.send(result);
-      } else {
-        res.send({ success: "UnAuthoraized Access" });
-      }
-      
-      
+    app.post("/login", async (req, res) => {
+      const user = req.body;
+      const accessToken =await jwt.sign(user, process.env.ACCESS_TOTKEN_SECRE, {
+        expiresIn: "1d",
+      });
+      res.send({ accessToken });
     });
 
     app.put("/fruitService/:id", async (req, res) => {
@@ -100,7 +84,7 @@ async function run(){
       const tokenInfo = req.headers.authorization;
       const [email, accessToken] = tokenInfo.split(" ");
       const decoded = verifyToken(accessToken);
-
+      
       if (email === decoded.email) {
         const product = await fruitCollection.find({ email: email }).toArray();
         res.send(product);
