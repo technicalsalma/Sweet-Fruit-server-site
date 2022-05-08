@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const jwt = require('jsonwebtoken')
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 require('dotenv').config();
 const port = process.env.PORT || 5000;
@@ -19,7 +20,11 @@ async function run(){
   try{
     await client.connect();
     const fruitCollection = client.db("SweetFruit").collection("fruitService");
+  
+ 
 
+    
+   //Fruit Api
     app.get("/fruitService", async (req, res) => {
       const query = {};
       const cursor = fruitCollection.find(query);
@@ -76,15 +81,7 @@ async function run(){
       res.send(fruits);
     });
 
-    //==============jwt========//
-    app.get("/order", async (req, res) => {
-      const email = req.query.email;
-      const query = {email:email};
-      const cursor = fruitCollection.find(query);
-      const orders = await cursor.toArray();
-      res.send(orders);
-    });
-    //==============jwt========//
+  
   }
   finally{
 
